@@ -1,26 +1,69 @@
-
-import email
 from flask import Blueprint, redirect, render_template, request, url_for, flash
+from . import db
+from .models import User
+from flask_login import current_user, login_user, logout_user, login_required
+from werkzeug.security import generate_password_hash, check_password_hash
 
 auth = Blueprint("auth", __name__)
 
 @auth.route("/login", methods=["GET","POST"])
 def login():
-    email = request.form.get("email")
-    password = request.form.get("password")
-    return render_template("login.html")
+    if request.method == "POST":    
+        email = request.form.get("email")
+        password = request.form.get("password")
+        
+        user = User.query.filter_by(email=email).first()
+        
+        if user == None:
+            flash("User not exist!",category="error")
+            
+        if user :
+            if check_password_hash(user.password, password):
+                flash("Logged In!",category="success")
+                login_user(user, remember=True)
+                return redirect(url_for("views.home"))
+            else :
+                flash("Password is Incorrect", category="error")
+                
+    return render_template("login.html", logged_in=0)
 
 @auth.route("/signup", methods=["GET","POST"])
 def sign_up():
-    username = request.form.get("username")
-    email = request.form.get("email")
-    password1 = request.form.get("password1")
-    password2 = request.form.get("password2")
-    
-    return render_template("signup.html")
+    if request.method == "POST":    
+        username = request.form.get("username")
+        email = request.form.get("email")
+        password1 = request.form.get("password1")
+        password2 = request.form.get("password2")
+        
+        email_exists = User.query.filter_by(email=email).first()
+        username_exists = User.query.filter_by(username=username).first()
+        
+        if email_exists :
+            flash("Email Already Exist", category="error")
+        elif username_exists :
+            flash("Username Already Exist", category="error")            
+        elif password1 != password2:
+            flash("Password don\'t match! ", category="error")
+        elif len(username) < 2 :
+            flash("Username is too short", category="error")
+        elif len(password1) < 6 :
+            flash("Password is too short", category="error")
+        elif len(email) < 8:
+            flash("Email is invalid", category="error")
+        else:
+            new_user = User(email=email, username=username, password=generate_password_hash(password1, method="sha256"))
+            db.session.add(new_user)
+            db.session.commit()
+            login_user(new_user, remember=True)
+            flash("User Successfully Created!", category="success")
+            return redirect(url_for("views.home"))
+        
+    return render_template("signup.html", logged_in=0)
 
 @auth.route("/logout")
+@login_required
 def logout():
-    flash("You have been logged out")
-    return redirect(url_for("views.home"))
+    logout_user()
+    flash("You have been logged out",category="warning")
+    return redirect(url_for("views.home", logged_in=0))
 

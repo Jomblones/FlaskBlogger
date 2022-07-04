@@ -1,13 +1,18 @@
-<!-- Base Html -->
+<!-- Base and Navbar -->
 {% extends "base.html" %}
 
-<!-- Title Html -->
+<!-- Block Title -->
 {% block title %}Home{% endblock %}
 
-<!-- Body Html -->
+<!-- Block Body -->
 {% block body %}
 
-{% with messages = get_flashed_messages() %}
+{% endblock %}
+
+<!-- Content -->
+{% block content %}
+  <!-- Message flash -->
+  {% with messages = get_flashed_messages() %}
   {% if messages %}
 
     <ul class=flashes>
@@ -20,13 +25,9 @@
     </ul>
     
   {% endif %}
-{% endwith %}
-
-{% endblock %}
-
-<!-- Content -->
-{% block content %}
-
+  {% endwith %}
+  
+<!-- content -->
 <h1>This is Homepage Jinjja</h1>
 
 {% endblock %}

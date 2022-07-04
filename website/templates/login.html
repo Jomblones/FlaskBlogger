@@ -2,7 +2,30 @@
 
 {% block title %}Login{% endblock %}
 
+<!-- Body Html -->
+{% block body %}
+
+{% endblock %}
+
 {% block content %}
+<!-- Message flash -->
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+
+    <ul class=flashes>
+    {% for message in messages %}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>{{ message }}</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+    </ul>
+    
+{% endif %}
+{% endwith %}
+  
+
+<!-- content -->
 <form action="" method="POST">
     <h3 align="center">Login</h3>
     <div class="form-group">
