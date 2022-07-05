@@ -13,9 +13,6 @@ def login():
         password = request.form.get("password")
         
         user = User.query.filter_by(email=email).first()
-        
-        if user == None:
-            flash("User not exist!",category="error")
             
         if user :
             if check_password_hash(user.password, password):
@@ -24,8 +21,10 @@ def login():
                 return redirect(url_for("views.home"))
             else :
                 flash("Password is Incorrect", category="error")
+        else:
+            flash("User not exist!",category="error")     
                 
-    return render_template("login.html", logged_in=0)
+    return render_template("login.html", user=current_user)
 
 @auth.route("/signup", methods=["GET","POST"])
 def sign_up():
@@ -58,12 +57,12 @@ def sign_up():
             flash("User Successfully Created!", category="success")
             return redirect(url_for("views.home"))
         
-    return render_template("signup.html", logged_in=0)
+    return render_template("signup.html", user=current_user)
 
 @auth.route("/logout")
 @login_required
 def logout():
     logout_user()
     flash("You have been logged out",category="warning")
-    return redirect(url_for("views.home", logged_in=0))
+    return redirect(url_for("auth.login"))
 
