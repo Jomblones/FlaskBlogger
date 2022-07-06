@@ -1,0 +1,71 @@
+<!-- Base and Navbar -->
+{% extends "base.html" %}
+
+<!-- Block Title -->
+{% block title %}{{username}}'s Posts{% endblock %}
+
+<!-- Block Body -->
+{% block body %}
+{% endblock %}
+
+<!-- Content Block -->
+{% block content %}
+  <!-- Message flash -->
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+
+    <ul class=flashes>
+    {% for message in messages %}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>{{ message }}</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+    </ul>
+    
+  {% endif %}
+  {% endwith %}
+  
+<!-- content -->
+
+{% if user.username == username %}
+    <h1 align="center">Your Posts</h1>
+{% else %}
+    <h1 align="center">{{username}}'s Posts</h1>
+{% endif %}
+
+<div id="posts">
+  {% for post in posts %}
+  <div class="card border-dark">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <a href="/posts/{{post.user.username}}">{{post.user.username}} </a>
+
+      {% if user.id == post.author %}
+      <div class="btn-group">
+        <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-bs-toggle="dropdown"></button>
+        <ul class="dropdown-menu">
+          <li><a href="/delete-post/{{post.id}}" class="dropdown-item">Delete</a></li>
+        </ul>
+      </div>
+      {% endif %}
+    </div>
+    <div class="card-body">
+      <div class="card-text">
+        {{post.text}}
+      </div>
+    </div>
+    <div class="card-footer text-muted">{{post.date_created}}</div>
+  </div>
+  <br>
+    {% endfor %}
+    
+  <div align="center">
+    <a href="/home">
+    <button class="btn btn-primary align-items-center btn-lg" >Back</button>
+    </a>
+  </div>
+  
+</div>
+
+
+{% endblock %}

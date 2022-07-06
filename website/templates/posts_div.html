@@ -1,33 +1,5 @@
-<!-- Base and Navbar -->
-{% extends "base.html" %}
 
-<!-- Block Title -->
-{% block title %}Home{% endblock %}
-
-<!-- Block Body -->
-{% block body %}
-
-{% endblock %}
-
-<!-- Content -->
-{% block content %}
-  <!-- Message flash -->
-  {% with messages = get_flashed_messages() %}
-  {% if messages %}
-
-    <ul class=flashes>
-    {% for message in messages %}
-    <div class="alert alert-warning alert-dismissible fade show" role="alert">
-        <strong>{{ message }}</strong>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-    {% endfor %}
-    </ul>
-    
-  {% endif %}
-  {% endwith %}
-  
-<!-- content -->
+<!-- Div Posts -->
 <h1 align="center">{% block header %} Posts {% endblock %} </h1>
 
 <div id="posts">
@@ -56,14 +28,12 @@
  
   {% endfor %}
 
-  
+  {% block footer %}
   <div align="center">
     <a href="/create-post">
     <button class="btn btn-primary align-items-center btn-lg" >Create Post</button>
     </a>
   </div>
-  
+  {% endblock %}
 
-</div>  
-
-{% endblock %}
+</div>

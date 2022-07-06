@@ -1,7 +1,7 @@
 from unicodedata import category
 from flask import Blueprint, redirect, render_template, request, flash, url_for
 from flask_login import login_required, current_user
-from .models import Post
+from .models import Post, User
 from . import db
 
 views = Blueprint("views", __name__)
@@ -46,3 +46,14 @@ def delete_post(id):
         
     return redirect(url_for("views.home"))
         
+@views.route("/posts/<username>", methods=["GET","POST"])
+@login_required
+def posts(username):
+    user = User.query.filter_by(username=username).first()
+    
+    if not user:
+        flash("No user with that name exists", category="error")
+        return redirect(url_for("views.home"))
+     
+    posts = user.posts
+    return render_template("posts.html", posts=posts, user=current_user, username=username)
